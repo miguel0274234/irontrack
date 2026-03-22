@@ -2,173 +2,203 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IronTrack Ultra | Performance</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>IronTrack Ultra | Elite</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #f97316; --bg: #030303; }
+        :root { --primary: #f97316; --bg: #050505; }
         
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: var(--bg); 
             color: #ffffff;
-            background-image: radial-gradient(circle at 50% -20%, #262626 0%, #030303 100%);
+            background-image: radial-gradient(circle at 50% 0%, #1a1a1a 0%, #050505 100%);
             min-height: 100vh;
-            -webkit-tap-highlight-color: transparent;
+            overscroll-behavior: none;
         }
 
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
 
-        /* Estilo Glassmorphism Refinado */
-        .glass { 
-            background: rgba(255, 255, 255, 0.02); 
-            backdrop-filter: blur(15px); 
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s ease;
+        /* Estética Neumorphism Dark & Glass */
+        .glass-card { 
+            background: rgba(255, 255, 255, 0.03); 
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 28px;
         }
 
-        .glass:hover {
-            border-color: rgba(249, 115, 22, 0.2);
-            background: rgba(255, 255, 255, 0.04);
+        .active-tab {
+            color: var(--primary);
+            position: relative;
+        }
+        .active-tab::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 4px;
+            background: var(--primary);
+            border-radius: 50%;
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.2);
+        /* Animações Modernas */
+        @keyframes popIn {
+            0% { opacity: 0; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
         }
+        .animate-pop { animation: popIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
 
-        .btn-primary:active { transform: scale(0.98); }
-
-        /* Scrollbar Estilizada */
-        .custom-scroll::-webkit-scrollbar { width: 4px; }
-        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
-        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(249, 115, 22, 0.3); border-radius: 10px; }
-
-        /* Animação de Entrada */
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .btn-action {
+            transition: transform 0.1s ease;
         }
-        .animate-card { animation: slideUp 0.4s ease-out forwards; }
+        .btn-action:active { transform: scale(0.92); }
 
-        /* Fix para Select no iOS/Android */
-        select { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
+        /* Esconder scrollbar */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="pb-24">
 
-    <div class="max-w-5xl mx-auto">
-        <header class="flex flex-col items-center mb-12 animate-card">
-            <h1 class="text-5xl md:text-6xl logo-font font-extrabold tracking-tighter italic italic">
-                IRON<span class="text-orange-500">TRACK</span>
-            </h1>
-            <div class="flex items-center gap-3 mt-2">
-                <span class="h-px w-8 bg-orange-500/50"></span>
-                <p class="text-[10px] text-gray-400 uppercase tracking-[0.6em] font-bold">Ultra Edition</p>
-                <span class="h-px w-8 bg-orange-500/50"></span>
+    <header class="p-6 sticky top-0 z-40 bg-black/20 backdrop-blur-lg border-b border-white/5">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl logo-font font-black italic tracking-tighter">IRON<span class="text-orange-500">TRACK</span></h1>
+                <p id="headerDate" class="text-[9px] text-gray-500 font-bold uppercase tracking-widest mt-0.5">MARÇO 2026</p>
             </div>
-        </header>
-
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            <div class="lg:col-span-1 space-y-6">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="glass p-5 rounded-[2rem] flex flex-col justify-center">
-                        <span class="text-[10px] font-bold text-gray-500 uppercase mb-1">Status</span>
-                        <p id="weeklyStats" class="text-xl font-bold italic text-orange-500">0/0</p>
-                    </div>
-                    <div class="glass p-5 rounded-[2rem] flex items-center justify-between">
-                        <div>
-                            <span class="text-[10px] font-bold text-gray-500 uppercase mb-1">Meta</span>
-                            <p id="todayProgress" class="text-xl font-bold italic">0%</p>
-                        </div>
-                        <svg class="w-10 h-10 -rotate-90">
-                            <circle cx="20" cy="20" r="16" stroke="rgba(255,255,255,0.05)" stroke-width="4" fill="none"/>
-                            <circle id="progressCircle" cx="20" cy="20" r="16" stroke="#f97316" stroke-width="4" fill="none" 
-                                    stroke-dasharray="100.5" stroke-dashoffset="100.5" stroke-linecap="round" class="transition-all duration-500"/>
-                        </svg>
-                    </div>
-                </div>
-
-                <div id="restTimerDisplay" class="glass p-6 rounded-[2rem] hidden border-orange-500/40 bg-orange-500/5">
-                    <div class="flex justify-between items-center">
-                        <div>
-                            <p class="text-[10px] font-black text-orange-500 uppercase tracking-widest">Descanso</p>
-                            <p id="timerClock" class="text-3xl font-black italic">00:00</p>
-                        </div>
-                        <button onclick="stopTimer()" class="h-12 w-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold">✕</button>
-                    </div>
-                </div>
-
-                <section class="glass p-8 rounded-[2.5rem] sticky top-8">
-                    <h2 class="text-xs font-black uppercase text-orange-500 mb-6 tracking-widest">Nova Sessão</h2>
-                    <div class="space-y-4">
-                        <div class="relative">
-                            <select id="daySelect" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none orange-glow font-bold text-sm cursor-pointer appearance-none">
-                                <option value="SEG">Segunda-feira</option>
-                                <option value="TER">Terça-feira</option>
-                                <option value="QUA">Quarta-feira</option>
-                                <option value="QUI">Quinta-feira</option>
-                                <option value="SEX">Sexta-feira</option>
-                                <option value="SAB">Sábado</option>
-                                <option value="DOM">Domingo</option>
-                            </select>
-                            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">▼</div>
-                        </div>
-                        <input type="text" id="workoutInput" placeholder="Nome do treino (Ex: Upper Body)" 
-                               class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none orange-glow font-medium text-sm">
-                        
-                        <button onclick="addWorkout()" class="btn-primary w-full text-black font-black py-4 rounded-2xl uppercase text-xs tracking-[0.2em]">
-                            Confirmar Treino
-                        </button>
-                    </div>
-                </section>
+            <div class="flex items-center gap-2">
+                <div class="h-2 w-2 rounded-full bg-orange-500 animate-pulse"></div>
+                <span class="text-[10px] font-black text-gray-400">ELITE</span>
             </div>
-
-            <div class="lg:col-span-2">
-                <div id="workoutList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    </div>
-            </div>
-
         </div>
-    </div>
+    </header>
 
-    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal()"></div>
-        <div class="glass w-full max-w-lg rounded-[3rem] overflow-hidden animate-card relative z-10 border-white/10">
-            <div class="p-8">
-                <div class="flex justify-between items-start mb-8">
-                    <div>
-                        <span id="modalDay" class="text-[10px] font-black text-orange-500 uppercase tracking-widest"></span>
-                        <h3 id="modalTitle" class="text-3xl font-bold italic logo-font leading-tight"></h3>
+    <main class="max-w-md mx-auto p-6">
+        
+        <section id="tab-home" class="tab-content active space-y-6">
+            <div class="glass-card p-6 flex justify-between items-center bg-orange-500/5">
+                <div>
+                    <span class="text-[10px] font-bold text-gray-500 uppercase">Progresso Semanal</span>
+                    <p id="statLabel" class="text-2xl font-black italic">0/0 FEITOS</p>
+                </div>
+                <div class="relative h-14 w-14">
+                    <svg class="w-full h-full -rotate-90">
+                        <circle cx="28" cy="28" r="24" stroke="rgba(255,255,255,0.05)" stroke-width="5" fill="none"/>
+                        <circle id="progressRing" cx="28" cy="28" r="24" stroke="#f97316" stroke-width="5" fill="none" 
+                                stroke-dasharray="150.8" stroke-dashoffset="150.8" stroke-linecap="round" class="transition-all duration-700"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div id="restTimerDisplay" class="hidden glass-card p-5 border-orange-500/30 bg-orange-500/10 animate-pop">
+                <div class="flex justify-between items-center">
+                    <span class="text-xs font-bold text-orange-500 italic">DESCANSO ATIVO</span>
+                    <span id="timerClock" class="text-3xl font-black italic tracking-tighter">00:00</span>
+                    <button onclick="stopTimer()" class="text-gray-400">✕</button>
+                </div>
+            </div>
+
+            <div id="workoutList" class="space-y-4">
+                </div>
+        </section>
+
+        <section id="tab-add" class="tab-content space-y-6 animate-pop">
+            <div class="glass-card p-8">
+                <h2 class="text-xl font-bold italic mb-6">NOVO PROTOCOLO</h2>
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">Dia do Treino</label>
+                        <select id="daySelect" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none focus:border-orange-500/50 appearance-none font-bold">
+                            <option value="SEG">Segunda-feira</option>
+                            <option value="TER">Terça-feira</option>
+                            <option value="QUA">Quarta-feira</option>
+                            <option value="QUI">Quinta-feira</option>
+                            <option value="SEX">Sexta-feira</option>
+                            <option value="SAB">Sábado</option>
+                            <option value="DOM">Domingo</option>
+                        </select>
                     </div>
-                    <button onclick="closeModal()" class="h-12 w-12 glass rounded-2xl flex items-center justify-center text-2xl">&times;</button>
-                </div>
-
-                <div class="flex gap-2 mb-6">
-                    <input type="text" id="exerciseInput" placeholder="Adicionar: Agachamento 3x12" 
-                           class="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none orange-glow text-sm">
-                    <button onclick="addExercise()" class="btn-primary text-black w-14 rounded-2xl font-bold text-2xl">+</button>
-                </div>
-
-                <div id="exerciseList" class="max-h-[40vh] overflow-y-auto space-y-3 pr-2 custom-scroll">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">Identificação</label>
+                        <input type="text" id="workoutInput" placeholder="Ex: Peito e Deltoides" 
+                               class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none focus:border-orange-500/50">
                     </div>
-
-                <div class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-3">
-                    <button onclick="startTimer(30)" class="px-5 py-2 rounded-xl glass text-[10px] font-bold uppercase hover:bg-orange-500 hover:text-black transition-all">30s Rest</button>
-                    <button onclick="startTimer(60)" class="px-5 py-2 rounded-xl glass text-[10px] font-bold uppercase hover:bg-orange-500 hover:text-black transition-all">60s Rest</button>
-                    <button onclick="startTimer(90)" class="px-5 py-2 rounded-xl glass text-[10px] font-bold uppercase hover:bg-orange-500 hover:text-black transition-all">90s Rest</button>
+                    <button onclick="addWorkout()" class="w-full bg-orange-500 text-black font-black py-5 rounded-2xl uppercase text-xs tracking-[0.2em] shadow-lg shadow-orange-500/20 btn-action mt-4">
+                        Criar Treino
+                    </button>
                 </div>
+            </div>
+        </section>
+
+    </main>
+
+    <nav class="fixed bottom-0 left-0 right-0 p-4 pb-8 bg-black/60 backdrop-blur-2xl border-t border-white/5 z-50">
+        <div class="max-w-md mx-auto flex justify-around items-center">
+            <button onclick="switchTab('home')" id="btn-home" class="flex flex-col items-center gap-1 active-tab btn-action">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                <span class="text-[9px] font-bold uppercase">Treinos</span>
+            </button>
+            <button onclick="switchTab('add')" id="btn-add" class="flex flex-col items-center gap-1 text-gray-500 btn-action">
+                <div class="bg-orange-500 text-black rounded-full p-2 -mt-8 shadow-xl shadow-orange-500/20 border-4 border-black">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M12 4v16m8-8H4"/></svg>
+                </div>
+                <span class="text-[9px] font-bold uppercase mt-1">Novo</span>
+            </button>
+        </div>
+    </nav>
+
+    <div id="modal" class="hidden fixed inset-0 z-[60] flex items-end sm:items-center justify-center p-0 sm:p-4">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
+        <div class="glass-card w-full max-w-md rounded-t-[2.5rem] sm:rounded-[2.5rem] p-8 animate-pop relative z-10 border-white/10 h-[85vh] sm:h-auto overflow-hidden">
+            <div class="w-12 h-1.5 bg-white/10 rounded-full mx-auto mb-6 sm:hidden"></div>
+            <div class="flex justify-between items-start mb-8">
+                <div>
+                    <h3 id="modalTitle" class="text-3xl font-bold italic italic leading-none uppercase"></h3>
+                    <p id="modalDay" class="text-[10px] text-orange-500 font-black uppercase mt-1 tracking-widest"></p>
+                </div>
+                <button onclick="closeModal()" class="h-10 w-10 glass-card flex items-center justify-center font-bold">✕</button>
+            </div>
+
+            <div class="flex gap-2 mb-6">
+                <input type="text" id="exerciseInput" placeholder="Ex: Leg Press 4x15" 
+                       class="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none text-sm">
+                <button onclick="addExercise()" class="bg-white text-black px-5 rounded-2xl font-bold text-xl btn-action">+</button>
+            </div>
+
+            <div id="exerciseList" class="h-[40vh] overflow-y-auto space-y-3 pr-2 no-scrollbar"></div>
+
+            <div class="mt-6 pt-6 border-t border-white/5 grid grid-cols-3 gap-2">
+                <button onclick="startTimer(45)" class="py-3 glass-card text-[9px] font-bold uppercase hover:bg-orange-500 hover:text-black">45s Rest</button>
+                <button onclick="startTimer(60)" class="py-3 glass-card text-[9px] font-bold uppercase hover:bg-orange-500 hover:text-black">60s Rest</button>
+                <button onclick="startTimer(90)" class="py-3 glass-card text-[9px] font-bold uppercase hover:bg-orange-500 hover:text-black">90s Rest</button>
             </div>
         </div>
     </div>
 
     <script>
-        let workouts = JSON.parse(localStorage.getItem('ironTrackUltra_v3')) || [];
+        let workouts = JSON.parse(localStorage.getItem('ironTrackUltra_vElite')) || [];
         let activeWorkoutId = null;
         let timerInterval;
+
+        // Inicia a data no header
+        const options = { month: 'long', year: 'numeric' };
+        document.getElementById('headerDate').innerText = new Intl.DateTimeFormat('pt-BR', options).format(new Date());
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelectorAll('nav button').forEach(b => b.classList.remove('active-tab', 'text-gray-500'));
+            
+            document.getElementById(`tab-${tab}`).classList.add('active');
+            document.getElementById(`btn-${tab}`).classList.add('active-tab');
+            if (tab === 'home') document.getElementById('btn-add').classList.add('text-gray-500');
+            else document.getElementById('btn-home').classList.add('text-gray-500');
+        }
 
         function addWorkout() {
             const day = document.getElementById('daySelect').value;
@@ -176,6 +206,7 @@
             if (!title) return;
             workouts.push({ id: Date.now(), day, title, done: false, exercises: [] });
             save();
+            switchTab('home');
             document.getElementById('workoutInput').value = "";
         }
 
@@ -196,7 +227,6 @@
 
         function closeModal() {
             document.getElementById('modal').classList.add('hidden');
-            activeWorkoutId = null;
         }
 
         function addExercise() {
@@ -224,12 +254,11 @@
             clearInterval(timerInterval);
             document.getElementById('restTimerDisplay').classList.remove('hidden');
             let timeLeft = seconds;
-            const display = document.getElementById('timerClock');
             
             const updateUI = () => {
                 const m = Math.floor(timeLeft / 60);
                 const s = timeLeft % 60;
-                display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                document.getElementById('timerClock').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
             };
 
             updateUI();
@@ -238,8 +267,8 @@
                 updateUI();
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    navigator.vibrate ? navigator.vibrate(200) : null;
                     document.getElementById('restTimerDisplay').classList.add('hidden');
+                    alert("Intervalo concluído! Próxima série.");
                 }
             }, 1000);
         }
@@ -251,14 +280,12 @@
 
         function deleteWorkout(id, e) {
             e.stopPropagation();
-            if(confirm("Deseja remover este treino?")) {
-                workouts = workouts.filter(w => w.id !== id);
-                save();
-            }
+            workouts = workouts.filter(w => w.id !== id);
+            save();
         }
 
         function save() {
-            localStorage.setItem('ironTrackUltra_v3', JSON.stringify(workouts));
+            localStorage.setItem('ironTrackUltra_vElite', JSON.stringify(workouts));
             render();
             updateStats();
         }
@@ -266,20 +293,19 @@
         function updateStats() {
             const total = workouts.length;
             const done = workouts.filter(w => w.done).length;
-            document.getElementById('weeklyStats').innerText = `${done}/${total}`;
-            const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-            document.getElementById('todayProgress').innerText = `${pct}%`;
-            document.getElementById('progressCircle').style.strokeDashoffset = 100.5 - (pct / 100 * 100.5);
+            document.getElementById('statLabel').innerText = `${done}/${total} FEITOS`;
+            const pct = total === 0 ? 0 : (done / total) * 100;
+            document.getElementById('progressRing').style.strokeDashoffset = 150.8 - (pct / 100 * 150.8);
         }
 
         function renderExercises() {
             const container = document.getElementById('exerciseList');
             const workout = workouts.find(w => w.id === activeWorkoutId);
             container.innerHTML = workout.exercises.map(ex => `
-                <div onclick="toggleExercise(${ex.id})" class="flex items-center justify-between p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition-all border border-white/5">
+                <div onclick="toggleExercise(${ex.id})" class="flex items-center justify-between p-5 bg-white/5 rounded-2xl border border-white/5 btn-action">
                     <span class="text-sm font-semibold ${ex.completed ? 'opacity-20 line-through' : ''}">${ex.name}</span>
                     <div class="w-6 h-6 rounded-lg border-2 border-orange-500/50 flex items-center justify-center ${ex.completed ? 'bg-orange-500 border-orange-500' : ''}">
-                        ${ex.completed ? '<span class="text-black font-bold text-xs">✓</span>' : ''}
+                        ${ex.completed ? '✓' : ''}
                     </div>
                 </div>
             `).join('');
@@ -288,21 +314,23 @@
         function render() {
             const list = document.getElementById('workoutList');
             if (workouts.length === 0) {
-                list.innerHTML = `<div class="col-span-full py-20 text-center opacity-20 font-bold uppercase tracking-widest">Nenhum treino agendado</div>`;
+                list.innerHTML = `<p class="text-center py-20 opacity-20 font-black uppercase tracking-[0.2em] italic">Vazio. Clique em Novo.</p>`;
                 return;
             }
             list.innerHTML = workouts.slice().reverse().map(w => `
-                <div onclick="openModal(${w.id})" class="glass rounded-[2rem] p-6 flex flex-col justify-between cursor-pointer border-l-4 ${w.done ? 'border-green-500' : 'border-orange-500'} animate-card">
-                    <div class="mb-6">
-                        <span class="text-[9px] font-black px-2 py-1 rounded-lg bg-orange-500/10 text-orange-500 uppercase tracking-tighter border border-orange-500/20">${w.day}</span>
-                        <h3 class="text-2xl font-bold italic uppercase tracking-tighter mt-3 leading-tight ${w.done ? 'line-through opacity-40' : ''}">${w.title}</h3>
-                        <p class="text-[10px] text-gray-500 font-bold mt-1 uppercase tracking-widest">${w.exercises.length} Movimentos</p>
+                <div onclick="openModal(${w.id})" class="glass-card p-6 border-l-4 ${w.done ? 'border-green-500' : 'border-orange-500'} animate-pop">
+                    <div class="flex justify-between items-start mb-4">
+                        <div>
+                            <span class="text-[9px] font-black px-2 py-0.5 rounded-full bg-white/5 text-gray-400 uppercase tracking-tighter">${w.day}</span>
+                            <h3 class="text-2xl font-black italic uppercase tracking-tighter mt-1 leading-tight ${w.done ? 'line-through opacity-30' : ''}">${w.title}</h3>
+                        </div>
+                        <button onclick="deleteWorkout(${w.id}, event)" class="text-gray-700">✕</button>
                     </div>
-                    <div class="flex gap-2">
-                        <button onclick="toggleWorkoutStatus(${w.id}, event)" class="flex-1 h-12 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all ${w.done ? 'bg-green-500 text-black' : 'bg-white/5 text-gray-400 border border-white/10 hover:border-orange-500/50'}">
-                            ${w.done ? 'Concluído' : 'Finalizar'}
+                    <div class="flex items-center gap-3">
+                        <button onclick="toggleWorkoutStatus(${w.id}, event)" class="flex-1 py-3 rounded-xl font-black text-[10px] uppercase tracking-widest ${w.done ? 'bg-green-500 text-black' : 'bg-white/5 text-gray-500'}">
+                            ${w.done ? 'FINALIZADO' : 'CONCLUIR TREINO'}
                         </button>
-                        <button onclick="deleteWorkout(${w.id}, event)" class="w-12 h-12 rounded-2xl bg-white/5 text-gray-700 flex items-center justify-center hover:text-red-500 transition-colors">✕</button>
+                        <div class="px-4 py-3 bg-white/5 rounded-xl text-[10px] font-black text-orange-500">${w.exercises.length} MOV.</div>
                     </div>
                 </div>
             `).join('');
