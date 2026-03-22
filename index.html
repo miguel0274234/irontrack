@@ -8,127 +8,165 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <style>
         :root { --primary: #f97316; --bg: #030303; }
+        
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: var(--bg); 
             color: #ffffff;
-            background-image: radial-gradient(circle at 50% -20%, #1a1a1a 0%, #030303 80%);
+            background-image: radial-gradient(circle at 50% -20%, #262626 0%, #030303 100%);
             min-height: 100vh;
-            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
         }
+
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
+
+        /* Estilo Glassmorphism Refinado */
         .glass { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(20px); 
+            background: rgba(255, 255, 255, 0.02); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s ease;
         }
-        .orange-glow:focus { box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.3); border-color: var(--primary); }
-        .btn-primary { background: linear-gradient(135deg, #f97316 0%, #c2410c 100%); }
-        .progress-ring { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
-        
-        /* Fix para o fundo do Select */
-        select option { background-color: #1a1a1a; color: white; }
-        
-        @keyframes pulse-border {
-            0% { border-color: rgba(249, 115, 22, 0.2); }
-            50% { border-color: rgba(249, 115, 22, 0.6); }
-            100% { border-color: rgba(249, 115, 22, 0.2); }
+
+        .glass:hover {
+            border-color: rgba(249, 115, 22, 0.2);
+            background: rgba(255, 255, 255, 0.04);
         }
-        .active-timer { animation: pulse-border 2s infinite; border-width: 2px; }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            box-shadow: 0 4px 15px rgba(234, 88, 12, 0.2);
+        }
+
+        .btn-primary:active { transform: scale(0.98); }
+
+        /* Scrollbar Estilizada */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(249, 115, 22, 0.3); border-radius: 10px; }
+
+        /* Animação de Entrada */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-card { animation: slideUp 0.4s ease-out forwards; }
+
+        /* Fix para Select no iOS/Android */
+        select { -webkit-appearance: none; -moz-appearance: none; appearance: none; }
     </style>
 </head>
-<body class="p-4 pb-24">
+<body class="p-4 md:p-8">
 
-    <div class="max-w-md mx-auto">
-        <header class="flex justify-center items-center mb-10 pt-8">
-            <div class="text-center">
-                <h1 class="text-4xl logo-font font-bold text-white tracking-tighter italic">IRON<span class="text-orange-500">TRACK</span></h1>
-                <p class="text-[10px] text-gray-500 uppercase tracking-[0.5em] font-bold">Limitless Performance</p>
+    <div class="max-w-5xl mx-auto">
+        <header class="flex flex-col items-center mb-12 animate-card">
+            <h1 class="text-5xl md:text-6xl logo-font font-extrabold tracking-tighter italic italic">
+                IRON<span class="text-orange-500">TRACK</span>
+            </h1>
+            <div class="flex items-center gap-3 mt-2">
+                <span class="h-px w-8 bg-orange-500/50"></span>
+                <p class="text-[10px] text-gray-400 uppercase tracking-[0.6em] font-bold">Ultra Edition</p>
+                <span class="h-px w-8 bg-orange-500/50"></span>
             </div>
         </header>
 
-        <div class="grid grid-cols-2 gap-4 mb-8">
-            <div class="glass p-4 rounded-3xl">
-                <p class="text-gray-500 text-[10px] font-bold uppercase mb-1">Concluídos</p>
-                <p class="text-xl font-bold italic" id="weeklyStats text-orange-500">0 Treinos</p>
-            </div>
-            <div class="glass p-4 rounded-3xl flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-[10px] font-bold uppercase mb-1">Meta Global</p>
-                    <p class="text-xl font-bold italic" id="todayProgress text-white">0%</p>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-1 space-y-6">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass p-5 rounded-[2rem] flex flex-col justify-center">
+                        <span class="text-[10px] font-bold text-gray-500 uppercase mb-1">Status</span>
+                        <p id="weeklyStats" class="text-xl font-bold italic text-orange-500">0/0</p>
+                    </div>
+                    <div class="glass p-5 rounded-[2rem] flex items-center justify-between">
+                        <div>
+                            <span class="text-[10px] font-bold text-gray-500 uppercase mb-1">Meta</span>
+                            <p id="todayProgress" class="text-xl font-bold italic">0%</p>
+                        </div>
+                        <svg class="w-10 h-10 -rotate-90">
+                            <circle cx="20" cy="20" r="16" stroke="rgba(255,255,255,0.05)" stroke-width="4" fill="none"/>
+                            <circle id="progressCircle" cx="20" cy="20" r="16" stroke="#f97316" stroke-width="4" fill="none" 
+                                    stroke-dasharray="100.5" stroke-dashoffset="100.5" stroke-linecap="round" class="transition-all duration-500"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="relative w-10 h-10">
-                    <svg class="w-full h-full progress-ring">
-                        <circle cx="20" cy="20" r="18" stroke="rgba(255,255,255,0.1)" stroke-width="4" fill="transparent"/>
-                        <circle id="progressCircle" cx="20" cy="20" r="18" stroke="#f97316" stroke-width="4" fill="transparent" stroke-dasharray="113.1" stroke-dashoffset="113.1" stroke-linecap="round"/>
-                    </svg>
+
+                <div id="restTimerDisplay" class="glass p-6 rounded-[2rem] hidden border-orange-500/40 bg-orange-500/5">
+                    <div class="flex justify-between items-center">
+                        <div>
+                            <p class="text-[10px] font-black text-orange-500 uppercase tracking-widest">Descanso</p>
+                            <p id="timerClock" class="text-3xl font-black italic">00:00</p>
+                        </div>
+                        <button onclick="stopTimer()" class="h-12 w-12 rounded-full bg-red-500/10 text-red-500 flex items-center justify-center font-bold">✕</button>
+                    </div>
                 </div>
+
+                <section class="glass p-8 rounded-[2.5rem] sticky top-8">
+                    <h2 class="text-xs font-black uppercase text-orange-500 mb-6 tracking-widest">Nova Sessão</h2>
+                    <div class="space-y-4">
+                        <div class="relative">
+                            <select id="daySelect" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none orange-glow font-bold text-sm cursor-pointer appearance-none">
+                                <option value="SEG">Segunda-feira</option>
+                                <option value="TER">Terça-feira</option>
+                                <option value="QUA">Quarta-feira</option>
+                                <option value="QUI">Quinta-feira</option>
+                                <option value="SEX">Sexta-feira</option>
+                                <option value="SAB">Sábado</option>
+                                <option value="DOM">Domingo</option>
+                            </select>
+                            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">▼</div>
+                        </div>
+                        <input type="text" id="workoutInput" placeholder="Nome do treino (Ex: Upper Body)" 
+                               class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none orange-glow font-medium text-sm">
+                        
+                        <button onclick="addWorkout()" class="btn-primary w-full text-black font-black py-4 rounded-2xl uppercase text-xs tracking-[0.2em]">
+                            Confirmar Treino
+                        </button>
+                    </div>
+                </section>
             </div>
+
+            <div class="lg:col-span-2">
+                <div id="workoutList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    </div>
+            </div>
+
         </div>
-
-        <div id="restTimerDisplay" class="glass mb-8 p-4 rounded-3xl hidden border-orange-500/30">
-            <div class="flex justify-between items-center">
-                <span class="text-[10px] font-bold text-orange-500 uppercase">Descanso Ativo</span>
-                <span id="timerClock" class="text-2xl font-black text-white italic">00:45</span>
-                <button onclick="stopTimer()" class="text-xs font-bold text-red-500 uppercase">Parar</button>
-            </div>
-        </div>
-
-        <section class="glass p-6 rounded-[2.5rem] mb-10">
-            <h2 class="text-[10px] font-black uppercase text-orange-500 mb-4 tracking-widest">Agendar Novo Treino</h2>
-            <div class="space-y-3">
-                <div class="flex gap-2">
-                    <select id="daySelect" class="bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none orange-glow text-sm font-semibold cursor-pointer">
-                        <option value="SEG">Segunda</option>
-                        <option value="TER">Terça</option>
-                        <option value="QUA">Quarta</option>
-                        <option value="QUI">Quinta</option>
-                        <option value="SEX">Sexta</option>
-                        <option value="SAB">Sábado</option>
-                        <option value="DOM">Domingo</option>
-                    </select>
-                    <input type="text" id="workoutInput" placeholder="Ex: Peito e Tríceps" class="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none orange-glow font-medium">
-                </div>
-                <button onclick="addWorkout()" class="btn-primary w-full text-black font-black py-4 rounded-2xl uppercase text-xs tracking-widest shadow-lg shadow-orange-950/20">
-                    Criar Treino
-                </button>
-            </div>
-        </section>
-
-        <div id="workoutList" class="space-y-4 pb-10"></div>
     </div>
 
     <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-xl" onclick="closeModal()"></div>
-        <div class="glass w-full max-w-sm rounded-[3rem] p-8 animate-in relative z-10 border-white/10">
-            <div class="flex justify-between items-start mb-6">
-                <div>
-                    <h3 id="modalTitle" class="text-3xl font-bold text-white italic logo-font uppercase">TREINO</h3>
-                    <p id="modalDay" class="text-[10px] text-orange-500 font-black uppercase tracking-widest"></p>
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal()"></div>
+        <div class="glass w-full max-w-lg rounded-[3rem] overflow-hidden animate-card relative z-10 border-white/10">
+            <div class="p-8">
+                <div class="flex justify-between items-start mb-8">
+                    <div>
+                        <span id="modalDay" class="text-[10px] font-black text-orange-500 uppercase tracking-widest"></span>
+                        <h3 id="modalTitle" class="text-3xl font-bold italic logo-font leading-tight"></h3>
+                    </div>
+                    <button onclick="closeModal()" class="h-12 w-12 glass rounded-2xl flex items-center justify-center text-2xl">&times;</button>
                 </div>
-                <button onclick="closeModal()" class="text-gray-400 text-3xl">&times;</button>
-            </div>
 
-            <div class="flex gap-2 mb-8">
-                <input type="text" id="exerciseInput" placeholder="Ex: Supino 4x10" class="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none orange-glow text-sm">
-                <button onclick="addExercise()" class="bg-white text-black px-5 rounded-2xl font-black text-xl">+</button>
-            </div>
+                <div class="flex gap-2 mb-6">
+                    <input type="text" id="exerciseInput" placeholder="Adicionar: Agachamento 3x12" 
+                           class="flex-1 bg-white/5 border border-white/10 p-4 rounded-2xl focus:outline-none orange-glow text-sm">
+                    <button onclick="addExercise()" class="btn-primary text-black w-14 rounded-2xl font-bold text-2xl">+</button>
+                </div>
 
-            <div id="exerciseList" class="max-h-[35vh] overflow-y-auto space-y-3 pr-2"></div>
+                <div id="exerciseList" class="max-h-[40vh] overflow-y-auto space-y-3 pr-2 custom-scroll">
+                    </div>
 
-            <div class="mt-8 pt-6 border-t border-white/5">
-                <p class="text-[10px] font-bold text-gray-500 uppercase mb-3 text-center">Iniciar Descanso</p>
-                <div class="flex justify-center gap-3">
-                    <button onclick="startTimer(30)" class="px-4 py-2 rounded-xl border border-white/10 text-xs font-bold hover:bg-orange-500 hover:text-black transition-all">30s</button>
-                    <button onclick="startTimer(60)" class="px-4 py-2 rounded-xl border border-white/10 text-xs font-bold hover:bg-orange-500 hover:text-black transition-all">60s</button>
-                    <button onclick="startTimer(90)" class="px-4 py-2 rounded-xl border border-white/10 text-xs font-bold hover:bg-orange-500 hover:text-black transition-all">90s</button>
+                <div class="mt-8 pt-6 border-t border-white/5 flex flex-wrap justify-center gap-3">
+                    <button onclick="startTimer(30)" class="px-5 py-2 rounded-xl glass text-[10px] font-bold uppercase hover:bg-orange-500 hover:text-black transition-all">30s Rest</button>
+                    <button onclick="startTimer(60)" class="px-5 py-2 rounded-xl glass text-[10px] font-bold uppercase hover:bg-orange-500 hover:text-black transition-all">60s Rest</button>
+                    <button onclick="startTimer(90)" class="px-5 py-2 rounded-xl glass text-[10px] font-bold uppercase hover:bg-orange-500 hover:text-black transition-all">90s Rest</button>
                 </div>
             </div>
         </div>
     </div>
 
     <script>
-        let workouts = JSON.parse(localStorage.getItem('ironTrackUltra_v2')) || [];
+        let workouts = JSON.parse(localStorage.getItem('ironTrackUltra_v3')) || [];
         let activeWorkoutId = null;
         let timerInterval;
 
@@ -136,7 +174,6 @@
             const day = document.getElementById('daySelect').value;
             const title = document.getElementById('workoutInput').value;
             if (!title) return;
-
             workouts.push({ id: Date.now(), day, title, done: false, exercises: [] });
             save();
             document.getElementById('workoutInput').value = "";
@@ -165,7 +202,7 @@
         function addExercise() {
             const input = document.getElementById('exerciseInput');
             if (!input.value) return;
-            workouts.map(w => {
+            workouts.forEach(w => {
                 if(w.id === activeWorkoutId) w.exercises.push({ id: Date.now(), name: input.value, completed: false });
             });
             input.value = "";
@@ -174,11 +211,9 @@
         }
 
         function toggleExercise(exId) {
-            workouts.map(w => {
+            workouts.forEach(w => {
                 if(w.id === activeWorkoutId) {
-                    w.exercises.map(ex => {
-                        if(ex.id === exId) ex.completed = !ex.completed;
-                    });
+                    w.exercises.forEach(ex => { if(ex.id === exId) ex.completed = !ex.completed; });
                 }
             });
             save();
@@ -189,11 +224,12 @@
             clearInterval(timerInterval);
             document.getElementById('restTimerDisplay').classList.remove('hidden');
             let timeLeft = seconds;
+            const display = document.getElementById('timerClock');
             
             const updateUI = () => {
                 const m = Math.floor(timeLeft / 60);
                 const s = timeLeft % 60;
-                document.getElementById('timerClock').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                display.innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
             };
 
             updateUI();
@@ -202,7 +238,7 @@
                 updateUI();
                 if (timeLeft <= 0) {
                     clearInterval(timerInterval);
-                    alert("Descanso finalizado! Próxima série.");
+                    navigator.vibrate ? navigator.vibrate(200) : null;
                     document.getElementById('restTimerDisplay').classList.add('hidden');
                 }
             }, 1000);
@@ -215,14 +251,14 @@
 
         function deleteWorkout(id, e) {
             e.stopPropagation();
-            if(confirm("Excluir este treino?")) {
+            if(confirm("Deseja remover este treino?")) {
                 workouts = workouts.filter(w => w.id !== id);
                 save();
             }
         }
 
         function save() {
-            localStorage.setItem('ironTrackUltra_v2', JSON.stringify(workouts));
+            localStorage.setItem('ironTrackUltra_v3', JSON.stringify(workouts));
             render();
             updateStats();
         }
@@ -230,10 +266,10 @@
         function updateStats() {
             const total = workouts.length;
             const done = workouts.filter(w => w.done).length;
-            document.getElementById('weeklyStats').innerText = `${done}/${total} Treinos`;
+            document.getElementById('weeklyStats').innerText = `${done}/${total}`;
             const pct = total === 0 ? 0 : Math.round((done / total) * 100);
             document.getElementById('todayProgress').innerText = `${pct}%`;
-            document.getElementById('progressCircle').style.strokeDashoffset = 113.1 - (pct / 100 * 113.1);
+            document.getElementById('progressCircle').style.strokeDashoffset = 100.5 - (pct / 100 * 100.5);
         }
 
         function renderExercises() {
@@ -241,9 +277,9 @@
             const workout = workouts.find(w => w.id === activeWorkoutId);
             container.innerHTML = workout.exercises.map(ex => `
                 <div onclick="toggleExercise(${ex.id})" class="flex items-center justify-between p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 transition-all border border-white/5">
-                    <span class="text-sm font-medium ${ex.completed ? 'opacity-30 line-through' : ''}">${ex.name}</span>
-                    <div class="w-6 h-6 rounded-lg border-2 border-orange-500 flex items-center justify-center ${ex.completed ? 'bg-orange-500' : ''}">
-                        ${ex.completed ? '✓' : ''}
+                    <span class="text-sm font-semibold ${ex.completed ? 'opacity-20 line-through' : ''}">${ex.name}</span>
+                    <div class="w-6 h-6 rounded-lg border-2 border-orange-500/50 flex items-center justify-center ${ex.completed ? 'bg-orange-500 border-orange-500' : ''}">
+                        ${ex.completed ? '<span class="text-black font-bold text-xs">✓</span>' : ''}
                     </div>
                 </div>
             `).join('');
@@ -252,19 +288,21 @@
         function render() {
             const list = document.getElementById('workoutList');
             if (workouts.length === 0) {
-                list.innerHTML = `<p class="text-center py-20 opacity-20 font-bold uppercase tracking-widest">Nenhum treino agendado</p>`;
+                list.innerHTML = `<div class="col-span-full py-20 text-center opacity-20 font-bold uppercase tracking-widest">Nenhum treino agendado</div>`;
                 return;
             }
             list.innerHTML = workouts.slice().reverse().map(w => `
-                <div onclick="openModal(${w.id})" class="glass rounded-[2rem] p-5 flex items-center justify-between cursor-pointer border-l-4 ${w.done ? 'border-green-500 opacity-50' : 'border-orange-500'}">
-                    <div>
-                        <span class="text-[9px] font-black px-2 py-0.5 rounded bg-white/10 text-orange-500 uppercase">${w.day}</span>
-                        <h3 class="text-xl font-bold italic uppercase tracking-tighter mt-1">${w.title}</h3>
-                        <p class="text-[9px] text-gray-500 font-bold uppercase">${w.exercises.length} Exercícios</p>
+                <div onclick="openModal(${w.id})" class="glass rounded-[2rem] p-6 flex flex-col justify-between cursor-pointer border-l-4 ${w.done ? 'border-green-500' : 'border-orange-500'} animate-card">
+                    <div class="mb-6">
+                        <span class="text-[9px] font-black px-2 py-1 rounded-lg bg-orange-500/10 text-orange-500 uppercase tracking-tighter border border-orange-500/20">${w.day}</span>
+                        <h3 class="text-2xl font-bold italic uppercase tracking-tighter mt-3 leading-tight ${w.done ? 'line-through opacity-40' : ''}">${w.title}</h3>
+                        <p class="text-[10px] text-gray-500 font-bold mt-1 uppercase tracking-widest">${w.exercises.length} Movimentos</p>
                     </div>
                     <div class="flex gap-2">
-                        <button onclick="toggleWorkoutStatus(${w.id}, event)" class="h-10 w-10 rounded-xl flex items-center justify-center ${w.done ? 'bg-green-500 text-black' : 'bg-white/5 text-gray-500 border border-white/10'}">✓</button>
-                        <button onclick="deleteWorkout(${w.id}, event)" class="h-10 w-10 rounded-xl bg-white/5 text-gray-700 flex items-center justify-center hover:text-red-500 transition-colors">✕</button>
+                        <button onclick="toggleWorkoutStatus(${w.id}, event)" class="flex-1 h-12 rounded-2xl font-bold text-xs uppercase tracking-widest transition-all ${w.done ? 'bg-green-500 text-black' : 'bg-white/5 text-gray-400 border border-white/10 hover:border-orange-500/50'}">
+                            ${w.done ? 'Concluído' : 'Finalizar'}
+                        </button>
+                        <button onclick="deleteWorkout(${w.id}, event)" class="w-12 h-12 rounded-2xl bg-white/5 text-gray-700 flex items-center justify-center hover:text-red-500 transition-colors">✕</button>
                     </div>
                 </div>
             `).join('');
