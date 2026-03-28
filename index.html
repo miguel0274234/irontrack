@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IronTrack Pro | Next Gen Performance</title>
+    <title>IronTrack Pro | Performance Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root { --primary: #f97316; --bg: #050505; }
         body { 
@@ -33,197 +34,164 @@
         .input-dark:focus {
             outline: none;
             border-color: var(--primary);
-            background: rgba(255, 255, 255, 0.08);
             box-shadow: 0 0 15px rgba(249, 115, 22, 0.1);
         }
         .btn-gradient {
             background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
             box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2);
         }
-        .btn-gradient:active { transform: scale(0.98); }
+        .workout-card-gym { border-left: 4px solid #f97316; }
+        .workout-card-cali { border-left: 4px solid #3b82f6; }
         
         /* Custom Scrollbar */
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
 
-        .workout-card-gym { border-left: 4px solid #f97316; }
-        .workout-card-cali { border-left: 4px solid #3b82f6; }
+        .metric-btn.active {
+            background: var(--primary);
+            color: black;
+            border-color: var(--primary);
+        }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-4 md:p-8 pt-28">
+
+    <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-[100] glass rounded-[2.5rem] px-6 py-3 flex items-center justify-between border-white/10 shadow-2xl">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-black font-black">+</div>
+        </div>
+        <div class="absolute left-1/2 -translate-x-1/2 text-center">
+            <h1 class="text-2xl logo-font font-bold text-white tracking-tighter italic leading-none">IRON<span class="text-orange-500">TRACK</span></h1>
+            <p class="text-[7px] text-gray-500 uppercase tracking-[0.4em] font-black">Evolution</p>
+        </div>
+        <div class="w-10 h-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+        </div>
+    </nav>
 
     <div class="max-w-5xl mx-auto">
         <header class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
             <div class="text-center md:text-left">
-                <h1 class="text-5xl logo-font font-bold text-white tracking-tighter italic">IRON<span class="text-orange-500 font-black">TRACK</span></h1>
-                <p class="text-[10px] text-gray-500 uppercase tracking-[0.5em] font-bold">Evolutionary System</p>
+                <h2 class="text-4xl logo-font font-bold text-white tracking-tighter italic uppercase">Arena</h2>
+                <p class="text-[10px] text-gray-500 uppercase tracking-[0.5em] font-bold">Progressão Constante</p>
             </div>
             
             <div class="flex gap-4">
                 <div class="glass px-6 py-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Status Semanal</p>
-                    <p class="text-xl font-black italic text-orange-500" id="statsText">0/0</p>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Volume Semanal</p>
+                    <p class="text-xl font-black italic text-orange-500" id="weeklyVolume">0 kg</p>
                 </div>
-                <div class="glass px-6 py-3 rounded-2xl flex items-center gap-4">
-                    <div>
-                        <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Meta</p>
-                        <p class="text-xl font-black italic" id="progressPct">0%</p>
-                    </div>
-                    <div class="w-10 h-10 rounded-full border-2 border-white/10 flex items-center justify-center">
-                        <div id="progressDot" class="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></div>
-                    </div>
+                <div class="glass px-6 py-3 rounded-2xl text-center">
+                    <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Treinos</p>
+                    <p class="text-xl font-black italic" id="statsText">0/0</p>
                 </div>
             </div>
         </header>
 
-        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div class="lg:col-span-1 space-y-6">
-                <section class="glass p-6 rounded-[2rem] sticky top-8">
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+            <div class="lg:col-span-1">
+                <section class="glass p-6 rounded-[2rem] sticky top-32">
                     <h2 class="text-xs font-black uppercase text-orange-500 mb-6 tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 bg-orange-500 rounded-full"></span> Agendar Treino
+                        <span class="w-2 h-2 bg-orange-500 rounded-full"></span> Novo Treino
                     </h2>
-                    
                     <div class="space-y-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-2 block">Título do Treino</label>
-                            <input type="text" id="workoutInput" placeholder="Ex: Push Day" class="w-full input-dark p-4 rounded-2xl text-sm font-medium text-white">
-                        </div>
-
+                        <input type="text" id="workoutInput" placeholder="Ex: Leg Day Brabo" class="w-full input-dark p-4 rounded-2xl text-sm font-medium text-white">
                         <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-2 block">Dia</label>
-                                <select id="daySelect" class="w-full input-dark p-4 rounded-2xl text-sm font-semibold text-white appearance-none cursor-pointer">
-                                    <option value="SEG">Segunda</option>
-                                    <option value="TER">Terça</option>
-                                    <option value="QUA">Quarta</option>
-                                    <option value="QUI">Quinta</option>
-                                    <option value="SEX">Sexta</option>
-                                    <option value="SAB">Sábado</option>
-                                    <option value="DOM">Domingo</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="text-[10px] font-bold text-gray-400 uppercase ml-2 mb-2 block">Modalidade</label>
-                                <select id="typeSelect" class="w-full input-dark p-4 rounded-2xl text-sm font-semibold text-white appearance-none cursor-pointer">
-                                    <option value="gym">Academia</option>
-                                    <option value="cali">Calistenia</option>
-                                </select>
-                            </div>
+                            <select id="daySelect" class="w-full input-dark p-4 rounded-2xl text-sm font-semibold text-white appearance-none cursor-pointer">
+                                <option value="SEG">Segunda</option>
+                                <option value="TER">Terça</option>
+                                <option value="QUA">Quarta</option>
+                                <option value="QUI">Quinta</option>
+                                <option value="SEX">Sexta</option>
+                                <option value="SAB">Sábado</option>
+                                <option value="DOM">Domingo</option>
+                            </select>
+                            <select id="typeSelect" class="w-full input-dark p-4 rounded-2xl text-sm font-semibold text-white appearance-none cursor-pointer">
+                                <option value="gym">Academia</option>
+                                <option value="cali">Calistenia</option>
+                            </select>
                         </div>
-
-                        <button onclick="addWorkout()" class="btn-gradient w-full text-black font-black py-4 rounded-2xl uppercase text-xs tracking-widest mt-4">
-                            Criar Sessão
-                        </button>
+                        <button onclick="addWorkout()" class="btn-gradient w-full text-black font-black py-4 rounded-2xl uppercase text-xs tracking-widest mt-4">Criar Sessão</button>
                     </div>
                 </section>
             </div>
 
             <div class="lg:col-span-2 space-y-4">
-                <div id="restTimerDisplay" class="glass p-4 rounded-2xl hidden border-orange-500/50 animate-bounce">
-                    <div class="flex justify-between items-center px-4">
-                        <div class="flex items-center gap-3">
-                            <span class="relative flex h-3 w-3"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75"></span><span class="relative inline-flex rounded-full h-3 w-3 bg-orange-500"></span></span>
-                            <span class="text-xs font-bold uppercase tracking-widest text-orange-500">Descanso Ativo</span>
-                        </div>
-                        <span id="timerClock" class="text-3xl font-black italic">00:00</span>
-                        <button onclick="stopTimer()" class="text-[10px] bg-red-500/10 text-red-500 px-3 py-1 rounded-full font-bold uppercase">Pular</button>
-                    </div>
-                </div>
-
                 <div id="workoutList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
             </div>
         </main>
+
+        <section class="glass p-8 rounded-[3rem] mb-20 border-orange-500/20">
+            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                <div>
+                    <h3 class="text-2xl font-black italic logo-font italic">EVOLUTION ANALYTICS</h3>
+                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Acompanhe a evolução de carga por grupamento</p>
+                </div>
+                <div class="flex flex-wrap gap-2 justify-center" id="muscleGroups">
+                    </div>
+            </div>
+            <div class="h-[300px] w-full relative">
+                <canvas id="evolutionChart"></canvas>
+            </div>
+        </section>
     </div>
 
-    <div id="modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/80 backdrop-blur-md" onclick="closeModal()"></div>
-        <div class="glass w-full max-w-2xl rounded-[2.5rem] p-6 md:p-10 relative z-10 overflow-hidden">
+    <div id="modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
+        <div class="glass w-full max-w-3xl rounded-[2.5rem] p-6 md:p-10 relative z-10 overflow-hidden border-white/10">
             <div class="flex justify-between items-start mb-8">
-                <div>
-                    <h3 id="modalTitle" class="text-3xl font-black text-white italic logo-font uppercase tracking-tighter">TREINO</h3>
-                    <div class="flex items-center gap-2 mt-1">
-                        <span id="modalTypeBadge" class="text-[9px] font-black px-2 py-0.5 rounded bg-orange-500 text-black uppercase">GYM</span>
-                        <p id="modalDay" class="text-[10px] text-gray-500 font-bold uppercase tracking-widest"></p>
-                    </div>
-                </div>
-                <button onclick="closeModal()" class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-gray-400 hover:text-white">&times;</button>
+                <h3 id="modalTitle" class="text-3xl font-black text-white italic logo-font uppercase tracking-tighter">TREINO</h3>
+                <button onclick="closeModal()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-gray-400 hover:text-white transition-all">&times;</button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-12 gap-3 mb-8">
                 <div class="md:col-span-6 relative">
-                    <input type="text" id="exerciseSearch" oninput="filterSuggestions()" placeholder="Pesquisar exercício..." class="w-full input-dark p-4 rounded-2xl text-sm">
+                    <input type="text" id="exerciseSearch" oninput="filterSuggestions()" placeholder="Qual o exercício hoje?" class="w-full input-dark p-4 rounded-2xl text-sm">
                     <div id="suggestions" class="absolute left-0 right-0 top-full mt-2 glass rounded-2xl overflow-hidden z-20 hidden"></div>
                 </div>
-                <div class="md:col-span-2">
-                    <input type="text" id="exSeries" placeholder="Séries" class="w-full input-dark p-4 rounded-2xl text-sm text-center">
-                </div>
-                <div class="md:col-span-2">
-                    <input type="text" id="exReps" placeholder="Reps" class="w-full input-dark p-4 rounded-2xl text-sm text-center">
-                </div>
-                <div class="md:col-span-2">
-                    <button onclick="addExercise()" class="w-full h-full btn-gradient rounded-2xl font-black text-xl text-black">+</button>
-                </div>
+                <div class="md:col-span-2"><input type="number" id="exSeries" placeholder="Séries" class="w-full input-dark p-4 rounded-2xl text-sm text-center"></div>
+                <div class="md:col-span-2"><input type="number" id="exReps" placeholder="Reps" class="w-full input-dark p-4 rounded-2xl text-sm text-center"></div>
+                <div class="md:col-span-2"><button onclick="addExercise()" class="w-full h-full btn-gradient rounded-2xl font-black text-xl text-black">+</button></div>
             </div>
 
             <div id="exerciseList" class="max-h-[40vh] overflow-y-auto space-y-3 pr-2 mb-8"></div>
-
-            <div class="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-white/5">
-                <span class="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Cronômetro de Descanso</span>
-                <div class="flex gap-2">
-                    <button onclick="startTimer(30)" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold hover:bg-orange-500 hover:text-black transition-all">30s</button>
-                    <button onclick="startTimer(45)" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold hover:bg-orange-500 hover:text-black transition-all">45s</button>
-                    <button onclick="startTimer(60)" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold hover:bg-orange-500 hover:text-black transition-all">60s</button>
-                    <button onclick="startTimer(90)" class="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-[10px] font-bold hover:bg-orange-500 hover:text-black transition-all">90s</button>
-                </div>
-            </div>
         </div>
     </div>
 
     <script>
-        // Banco de Exercícios Pré-definidos
+        // Mapeamento de grupamentos musculares
+        const MUSCLE_MAP = {
+            "Peito": ["Supino", "Crucifixo", "Crossover", "Peck", "Voador", "Flexão", "Chest", "Dips"],
+            "Costas": ["Puxada", "Remada", "Pull", "Chin", "Levantamento", "Terra", "Muscle"],
+            "Perna": ["Agachamento", "Leg", "Hack", "Extensora", "Flexora", "Abdutora", "Adutora", "Stiff", "Afundo", "Avanço", "Búlgaro", "Pistol", "Gêmeos", "Panturrilha"],
+            "Ombro": ["Desenvolvimento", "Elevação", "Face", "Encolhimento", "Handstand"],
+            "Braço": ["Rosca", "Tríceps", "Martelo", "Scott", "Testa", "Punho"]
+        };
+
         const exerciseBank = [
-    // --- PEITO (Chest) ---
-    "Supino Reto (Barra)", "Supino Reto (Halter)", "Supino Inclinado (Barra)", "Supino Inclinado (Halter)", 
-    "Supino Declinado", "Crucifixo Reto", "Crucifixo Inclinado", "Crossover Alto", "Crossover Baixo", 
-    "Peck Deck (Voador)", "Chest Press (Máquina)", "Flexão de Braços (Push Ups)", "Flexão Diamante", 
-    "Flexão Declinada", "Flexão Explosiva", "Dips (Paralelas Peito)",
+            "Supino Reto (Barra)", "Supino Inclinado (Halter)", "Crucifixo Reto", "Peck Deck",
+            "Puxada Pulley Aberta", "Remada Curvada", "Remada Cavalinho", "Levantamento Terra",
+            "Agachamento Livre", "Leg Press 45°", "Cadeira Extensora", "Stiff",
+            "Desenvolvimento Halter", "Elevação Lateral", "Encolhimento",
+            "Rosca Direta (Barra W)", "Rosca Martelo", "Tríceps Pulley", "Tríceps Testa"
+        ];
 
-    // --- COSTAS (Back) ---
-    "Puxada Pulley Aberta", "Puxada Pulley Triângulo", "Puxada Supinada", "Remada Curvada (Barra)", 
-    "Remada Unilateral (Serrote)", "Remada Baixa (Triângulo)", "Remada Cavalinho", "Pull Down (Corda)", 
-    "Pull Ups (Barra Fixa)", "Chin Ups (Barra Fixa Supinada)", "Australian Pull Ups (Remada Invertida)", 
-    "Muscle Up", "Front Lever (Progressão)", "Back Lever", "Levantamento Terra (Deadlift)",
-
-    // --- PERNAS (Legs) ---
-    "Agachamento Livre (Back Squat)", "Agachamento Frontal", "Agachamento Sumô", "Leg Press 45°", 
-    "Hack Squat", "Cadeira Extensora", "Mesa Flexora", "Cadeira Flexora", "Cadeira Abdutora", 
-    "Cadeira Adutora", "Stiff", "Afundo (Lunge)", "Avanço", "Agachamento Búlgaro", "Elevação Pélvica", 
-    "Pistol Squat", "Gêmeos em Pé (Panturrilha)", "Gêmeos Sentado", "Burpees",
-
-    // --- OMBROS (Shoulders) ---
-    "Desenvolvimento (Military Press)", "Desenvolvimento Arnold", "Desenvolvimento Halter", 
-    "Elevação Lateral (Halter)", "Elevação Lateral (Polia)", "Elevação Frontal", "Crucifixo Invertido", 
-    "Face Pull", "Encolhimento (Trapézio)", "Handstand Push Ups (Flexão na Parede)", "Planche Lean",
-
-    // --- BRAÇOS (Biceps/Triceps/Forearm) ---
-    "Rosca Direta (Barra W)", "Rosca Alternada", "Rosca Concentrada", "Rosca Martelo", "Rosca Scott", 
-    "Rosca Inversa", "Tríceps Testa", "Tríceps Pulley (Corda)", "Tríceps Pulley (Barra)", 
-    "Tríceps Francês", "Tríceps Coice", "Dips no Banco", "Extensão de Punho",
-
-    // --- CORE & ABS ---
-    "Abdominal Supra", "Abdominal Infra", "Abdominal Bicicleta", "Prancha Isométrica (Plank)", 
-    "Prancha Lateral", "Russian Twist", "L-Sit", "Toes to Bar (Pés na Barra)", "Leg Raise (Elevação de Pernas)", 
-    "Hollow Body Hold", "Wheel Rollout (Roda Abdominal)",
-
-    // --- CARDIO & OUTROS ---
-    "Corrida (Esteira)", "Bicicleta Ergométrica", "Elíptico", "Corda (Jump Rope)", "Box Jumps", "Shadow Boxing"
-];
-
-        let workouts = JSON.parse(localStorage.getItem('ironTrackPro_v1')) || [];
+        let workouts = JSON.parse(localStorage.getItem('ironTrackPro_v2')) || [];
+        let history = JSON.parse(localStorage.getItem('ironTrackHistory')) || [];
         let activeWorkoutId = null;
-        let timerInterval;
+        let chartInstance = null;
+
+        function getMuscleGroup(exerciseName) {
+            for (let group in MUSCLE_MAP) {
+                if (MUSCLE_MAP[group].some(keyword => exerciseName.toLowerCase().includes(keyword.toLowerCase()))) {
+                    return group;
+                }
+            }
+            return "Outros";
+        }
 
         function addWorkout() {
             const day = document.getElementById('daySelect').value;
@@ -231,14 +199,7 @@
             const title = document.getElementById('workoutInput').value;
             if (!title) return;
 
-            workouts.push({ 
-                id: Date.now(), 
-                day, 
-                type, 
-                title, 
-                done: false, 
-                exercises: [] 
-            });
+            workouts.push({ id: Date.now(), day, type, title, done: false, exercises: [] });
             save();
             document.getElementById('workoutInput').value = "";
         }
@@ -251,10 +212,8 @@
             const matches = exerciseBank.filter(ex => ex.toLowerCase().includes(val));
             if(matches.length > 0) {
                 res.classList.remove('hidden');
-                res.innerHTML = matches.map(m => `<div onclick="selectSuggestion('${m}')" class="p-4 hover:bg-orange-500 hover:text-black cursor-pointer text-sm font-bold border-b border-white/5">${m}</div>`).join('');
-            } else {
-                res.classList.add('hidden');
-            }
+                res.innerHTML = matches.slice(0, 5).map(m => `<div onclick="selectSuggestion('${m}')" class="p-4 hover:bg-orange-500 hover:text-black cursor-pointer text-sm font-bold border-b border-white/5">${m}</div>`).join('');
+            } else { res.classList.add('hidden'); }
         }
 
         function selectSuggestion(val) {
@@ -266,9 +225,6 @@
             activeWorkoutId = id;
             const workout = workouts.find(w => w.id === id);
             document.getElementById('modalTitle').innerText = workout.title;
-            document.getElementById('modalDay').innerText = workout.day;
-            document.getElementById('modalTypeBadge').innerText = workout.type === 'gym' ? 'ACADEMIA' : 'CALISTENIA';
-            document.getElementById('modalTypeBadge').className = `text-[9px] font-black px-2 py-0.5 rounded uppercase ${workout.type === 'gym' ? 'bg-orange-500 text-black' : 'bg-blue-500 text-white'}`;
             document.getElementById('modal').classList.remove('hidden');
             renderExercises();
         }
@@ -280,34 +236,50 @@
 
         function addExercise() {
             const name = document.getElementById('exerciseSearch').value;
-            const series = document.getElementById('exSeries').value || "0";
-            const reps = document.getElementById('exReps').value || "0";
-            
+            const series = document.getElementById('exSeries').value || 0;
+            const reps = document.getElementById('exReps').value || 0;
             if (!name) return;
 
             workouts = workouts.map(w => {
                 if(w.id === activeWorkoutId) {
-                    w.exercises.push({ id: Date.now(), name, series, reps, completed: false });
+                    w.exercises.push({ id: Date.now(), name, series, reps, completed: false, weight: 0 });
                 }
                 return w;
             });
-
-            document.getElementById('exerciseSearch').value = "";
-            document.getElementById('exSeries').value = "";
-            document.getElementById('exReps').value = "";
             save();
             renderExercises();
         }
 
         function toggleExercise(exId) {
+            const weight = prompt("Carga máxima utilizada (kg):", "0");
+            if (weight === null) return;
+
             workouts = workouts.map(w => {
                 if(w.id === activeWorkoutId) {
-                    w.exercises = w.exercises.map(ex => ex.id === exId ? {...ex, completed: !ex.completed} : ex);
+                    w.exercises = w.exercises.map(ex => {
+                        if(ex.id === exId) {
+                            const isFinishing = !ex.completed;
+                            if(isFinishing) {
+                                history.push({
+                                    date: new Date().toLocaleDateString('pt-BR'),
+                                    timestamp: Date.now(),
+                                    exercise: ex.name,
+                                    group: getMuscleGroup(ex.name),
+                                    weight: parseFloat(weight) || 0,
+                                    volume: (parseFloat(weight) || 0) * (ex.series * ex.reps)
+                                });
+                            }
+                            return {...ex, completed: !ex.completed, weight: parseFloat(weight)};
+                        }
+                        return ex;
+                    });
                 }
                 return w;
             });
+            localStorage.setItem('ironTrackHistory', JSON.stringify(history));
             save();
             renderExercises();
+            initChart();
         }
 
         function toggleWorkoutStatus(id, e) {
@@ -318,42 +290,11 @@
 
         function deleteWorkout(id, e) {
             e.stopPropagation();
-            if(confirm("Deseja deletar este treino?")) {
-                workouts = workouts.filter(w => w.id !== id);
-                save();
-            }
-        }
-
-        function startTimer(seconds) {
-            clearInterval(timerInterval);
-            document.getElementById('restTimerDisplay').classList.remove('hidden');
-            let timeLeft = seconds;
-            
-            const updateUI = () => {
-                const m = Math.floor(timeLeft / 60);
-                const s = timeLeft % 60;
-                document.getElementById('timerClock').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
-            };
-
-            updateUI();
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                updateUI();
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    new Audio('https://actions.google.com/sounds/v1/alarms/beep_short.ogg').play().catch(() => {});
-                    document.getElementById('restTimerDisplay').classList.add('hidden');
-                }
-            }, 1000);
-        }
-
-        function stopTimer() {
-            clearInterval(timerInterval);
-            document.getElementById('restTimerDisplay').classList.add('hidden');
+            if(confirm("Remover treino?")) { workouts = workouts.filter(w => w.id !== id); save(); }
         }
 
         function save() {
-            localStorage.setItem('ironTrackPro_v1', JSON.stringify(workouts));
+            localStorage.setItem('ironTrackPro_v2', JSON.stringify(workouts));
             render();
             updateStats();
         }
@@ -362,25 +303,24 @@
             const total = workouts.length;
             const done = workouts.filter(w => w.done).length;
             document.getElementById('statsText').innerText = `${done}/${total}`;
-            const pct = total === 0 ? 0 : Math.round((done / total) * 100);
-            document.getElementById('progressPct').innerText = `${pct}%`;
+            
+            const totalVolume = history.slice(-20).reduce((acc, curr) => acc + curr.weight, 0);
+            document.getElementById('weeklyVolume').innerText = `${totalVolume.toLocaleString()} kg`;
         }
 
         function renderExercises() {
             const container = document.getElementById('exerciseList');
             const workout = workouts.find(w => w.id === activeWorkoutId);
-            if(!workout.exercises.length) {
-                container.innerHTML = `<p class="text-center py-10 opacity-30 text-xs font-bold uppercase tracking-widest">Nenhum exercício adicionado</p>`;
-                return;
-            }
             container.innerHTML = workout.exercises.map(ex => `
                 <div onclick="toggleExercise(${ex.id})" class="flex items-center justify-between p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 border border-white/5">
                     <div>
                         <span class="text-sm font-bold ${ex.completed ? 'opacity-30 line-through' : ''}">${ex.name}</span>
-                        <p class="text-[10px] text-orange-500 font-black">${ex.series} Séries x ${ex.reps} Reps</p>
+                        <p class="text-[10px] text-orange-500 font-black italic">
+                            ${ex.series}x${ex.reps} • ${ex.weight > 0 ? ex.weight + 'kg' : 'Sem carga'}
+                        </p>
                     </div>
                     <div class="w-8 h-8 rounded-xl border-2 border-orange-500 flex items-center justify-center ${ex.completed ? 'bg-orange-500 text-black' : 'text-orange-500'}">
-                        ${ex.completed ? '✓' : ''}
+                        ${ex.completed ? '✓' : '+'}
                     </div>
                 </div>
             `).join('');
@@ -388,10 +328,6 @@
 
         function render() {
             const list = document.getElementById('workoutList');
-            if (workouts.length === 0) {
-                list.innerHTML = `<div class="col-span-full py-20 text-center opacity-20 font-black uppercase tracking-[0.3em] text-xs">Arena Vazia. Agende seu treino.</div>`;
-                return;
-            }
             list.innerHTML = workouts.slice().reverse().map(w => `
                 <div onclick="openModal(${w.id})" class="glass rounded-[2rem] p-6 flex flex-col justify-between cursor-pointer ${w.done ? 'opacity-40 grayscale' : ''} ${w.type === 'gym' ? 'workout-card-gym' : 'workout-card-cali'}">
                     <div class="flex justify-between items-start mb-4">
@@ -401,19 +337,69 @@
                         </div>
                         <div class="flex gap-2">
                             <button onclick="toggleWorkoutStatus(${w.id}, event)" class="h-10 w-10 rounded-xl flex items-center justify-center ${w.done ? 'bg-green-500 text-black' : 'bg-white/5 text-gray-500 border border-white/10'} font-bold">✓</button>
-                            <button onclick="deleteWorkout(${w.id}, event)" class="h-10 w-10 rounded-xl bg-white/5 text-gray-700 flex items-center justify-center hover:text-red-500 transition-colors">✕</button>
+                            <button onclick="deleteWorkout(${w.id}, event)" class="h-10 w-10 rounded-xl bg-white/5 text-gray-700 flex items-center justify-center hover:text-red-500">✕</button>
                         </div>
                     </div>
-                    <div class="flex items-center justify-between mt-4">
-                        <span class="text-[10px] font-bold text-gray-500 uppercase">${w.exercises.length} Exercícios</span>
-                        <span class="text-[9px] font-black uppercase ${w.type === 'gym' ? 'text-orange-500' : 'text-blue-500'}">${w.type}</span>
-                    </div>
+                    <span class="text-[10px] font-bold text-gray-500 uppercase">${w.exercises.length} Exercícios</span>
                 </div>
             `).join('');
         }
 
+        // --- Gráfico de Evolução ---
+        function initChart(group = "Peito") {
+            const ctx = document.getElementById('evolutionChart').getContext('2d');
+            const filteredData = history.filter(h => h.group === group).slice(-7);
+            
+            const labels = filteredData.map(d => d.date);
+            const weights = filteredData.map(d => d.weight);
+
+            if (chartInstance) chartInstance.destroy();
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `Carga Máxima (kg) - ${group}`,
+                        data: weights,
+                        borderColor: '#f97316',
+                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
+                        borderWidth: 4,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#f97316',
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#666' } },
+                        x: { grid: { display: false }, ticks: { color: '#666' } }
+                    }
+                }
+            });
+
+            // Atualizar botões
+            document.querySelectorAll('.metric-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.innerText === group.toUpperCase());
+            });
+        }
+
+        // Gerar botões de filtro
+        const groups = ["Peito", "Costas", "Perna", "Ombro", "Braço"];
+        const groupContainer = document.getElementById('muscleGroups');
+        groupContainer.innerHTML = groups.map(g => `
+            <button onclick="initChart('${g}')" class="metric-btn px-4 py-2 rounded-xl glass text-[10px] font-black uppercase tracking-widest border border-white/5 hover:border-orange-500 transition-all">
+                ${g}
+            </button>
+        `).join('');
+
         render();
         updateStats();
+        initChart("Peito");
     </script>
 </body>
 </html>
