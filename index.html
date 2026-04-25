@@ -3,372 +3,195 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IronTrack Pro | Performance Analytics</title>
+    <title>IRONTRACK PRO | Advanced Analytics</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Grotesk:wght@700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        :root { --primary: #f97316; --bg: #050505; }
+        :root { --primary: #f97316; --bg: #030303; --card: rgba(255, 255, 255, 0.03); }
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: var(--bg); 
+            background: var(--bg); 
             color: #ffffff;
-            background-image: 
-                radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 25%),
-                radial-gradient(circle at 100% 100%, rgba(249, 115, 22, 0.05) 0%, transparent 25%);
+            background-image: radial-gradient(circle at 0% 0%, rgba(249, 115, 22, 0.08) 0%, transparent 40%);
             min-height: 100vh;
         }
         .logo-font { font-family: 'Space Grotesk', sans-serif; }
         .glass { 
-            background: rgba(255, 255, 255, 0.03); 
-            backdrop-filter: blur(12px); 
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--card); 
+            backdrop-filter: blur(16px); 
+            border: 1px solid rgba(255, 255, 255, 0.06);
         }
-        .glass:hover { border-color: rgba(249, 115, 22, 0.3); }
-        .input-dark {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.2s;
-        }
-        .input-dark:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 15px rgba(249, 115, 22, 0.1);
-        }
-        .btn-gradient {
+        .btn-primary {
             background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.2);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .workout-card-gym { border-left: 4px solid #f97316; }
-        .workout-card-cali { border-left: 4px solid #3b82f6; }
-        
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-thumb { background: #333; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
-
-        .metric-btn.active {
-            background: var(--primary);
-            color: black;
-            border-color: var(--primary);
-        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3); }
+        .active-filter { background: var(--primary) !important; color: black !important; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
+        input, select { transition: border 0.3s ease; }
+        .workout-done { opacity: 0.4; filter: grayscale(0.8); }
     </style>
 </head>
-<body class="p-4 md:p-8 pt-28">
+<body class="p-4 md:p-10 pt-28">
 
-    <nav class="fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-5xl z-[100] glass rounded-[2.5rem] px-6 py-3 flex items-center justify-between border-white/10 shadow-2xl">
-        <div class="flex items-center gap-2">
-            <div class="w-10 h-10 rounded-xl bg-orange-500 flex items-center justify-center text-black font-black">+</div>
+    <nav class="fixed top-6 left-1/2 -translate-x-1/2 w-[92%] max-w-6xl z-[100] glass rounded-3xl px-8 py-4 flex items-center justify-between border-white/10 shadow-2xl">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-2xl bg-orange-500 flex items-center justify-center text-black font-black text-2xl shadow-lg shadow-orange-500/20">IT</div>
+            <div>
+                <h1 class="text-xl logo-font font-bold tracking-tighter italic leading-none uppercase">Iron<span class="text-orange-500">Track</span></h1>
+                <p class="text-[7px] text-gray-500 uppercase tracking-[0.5em] font-black">v4.0 Enterprise</p>
+            </div>
         </div>
-        <div class="absolute left-1/2 -translate-x-1/2 text-center">
-            <h1 class="text-2xl logo-font font-bold text-white tracking-tighter italic leading-none">IRON<span class="text-orange-500">TRACK</span></h1>
-            <p class="text-[7px] text-gray-500 uppercase tracking-[0.4em] font-black">Evolution</p>
-        </div>
-        <div class="w-10 h-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-            </svg>
+        
+        <div class="flex gap-6">
+            <div class="hidden md:block text-right">
+                <p class="text-[9px] text-gray-500 font-bold uppercase">Volume Acumulado</p>
+                <p class="text-lg font-black text-orange-500 leading-none" id="totalVolHeader">0 kg</p>
+            </div>
+            <div class="text-right border-l border-white/10 pl-6">
+                <p class="text-[9px] text-gray-500 font-bold uppercase">Meta Semanal</p>
+                <p class="text-lg font-black text-white leading-none" id="statsHeader">0/0</p>
+            </div>
         </div>
     </nav>
 
-    <div class="max-w-5xl mx-auto">
-        <header class="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
-            <div class="text-center md:text-left">
-                <h2 class="text-4xl logo-font font-bold text-white tracking-tighter italic uppercase">Arena</h2>
-                <p class="text-[10px] text-gray-500 uppercase tracking-[0.5em] font-bold">Progressão Constante</p>
-            </div>
+    <div class="max-w-6xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            <div class="flex gap-4">
-                <div class="glass px-6 py-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Volume Semanal</p>
-                    <p class="text-xl font-black italic text-orange-500" id="weeklyVolume">0 kg</p>
-                </div>
-                <div class="glass px-6 py-3 rounded-2xl text-center">
-                    <p class="text-[10px] text-gray-500 font-bold uppercase mb-1">Treinos</p>
-                    <p class="text-xl font-black italic" id="statsText">0/0</p>
-                </div>
-            </div>
-        </header>
-
-        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
-            <div class="lg:col-span-1">
-                <section class="glass p-6 rounded-[2rem] sticky top-32">
-                    <h2 class="text-xs font-black uppercase text-orange-500 mb-6 tracking-widest flex items-center gap-2">
-                        <span class="w-2 h-2 bg-orange-500 rounded-full"></span> Novo Treino
+            <aside class="lg:col-span-4 space-y-6">
+                <section class="glass p-8 rounded-[2.5rem] border-white/5">
+                    <h2 class="text-xs font-black uppercase text-orange-500 mb-8 tracking-[0.2em] flex items-center gap-3">
+                        <span class="w-2 h-2 bg-orange-500 rounded-full animate-ping"></span> Engine de Treino
                     </h2>
+                    
                     <div class="space-y-4">
-                        <input type="text" id="workoutInput" placeholder="Ex: Leg Day Brabo" class="w-full input-dark p-4 rounded-2xl text-sm font-medium text-white">
-                        <div class="grid grid-cols-2 gap-3">
-                            <select id="daySelect" class="w-full input-dark p-4 rounded-2xl text-sm font-semibold text-white appearance-none cursor-pointer">
-                                <option value="SEG">Segunda</option>
-                                <option value="TER">Terça</option>
-                                <option value="QUA">Quarta</option>
-                                <option value="QUI">Quinta</option>
-                                <option value="SEX">Sexta</option>
-                                <option value="SAB">Sábado</option>
-                                <option value="DOM">Domingo</option>
-                            </select>
-                            <select id="typeSelect" class="w-full input-dark p-4 rounded-2xl text-sm font-semibold text-white appearance-none cursor-pointer">
-                                <option value="gym">Academia</option>
-                                <option value="cali">Calistenia</option>
-                            </select>
+                        <div>
+                            <label class="text-[9px] uppercase font-bold text-gray-500 ml-2">Identificação</label>
+                            <input type="text" id="workoutInput" placeholder="Ex: Upper Body Focus" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-sm focus:border-orange-500 outline-none mt-1">
                         </div>
-                        <button onclick="addWorkout()" class="btn-gradient w-full text-black font-black py-4 rounded-2xl uppercase text-xs tracking-widest mt-4">Criar Sessão</button>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="text-[9px] uppercase font-bold text-gray-500 ml-2">Dia</label>
+                                <select id="daySelect" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-xs font-bold appearance-none cursor-pointer mt-1">
+                                    <option value="SEG">Segunda</option><option value="TER">Terça</option>
+                                    <option value="QUA">Quarta</option><option value="QUI">Quinta</option>
+                                    <option value="SEX">Sexta</option><option value="SAB">Sábado</option>
+                                    <option value="DOM">Domingo</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="text-[9px] uppercase font-bold text-gray-500 ml-2">Modalidade</label>
+                                <select id="typeSelect" class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl text-xs font-bold appearance-none cursor-pointer mt-1">
+                                    <option value="gym">Academia</option>
+                                    <option value="cali">Calistenia</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <button onclick="addWorkout()" class="btn-primary w-full text-black font-black py-5 rounded-2xl uppercase text-xs tracking-widest mt-4">
+                            Instanciar Sessão
+                        </button>
                     </div>
                 </section>
-            </div>
+            </aside>
 
-            <div class="lg:col-span-2 space-y-4">
-                <div id="workoutList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-            </div>
-        </main>
-
-        <section class="glass p-8 rounded-[3rem] mb-20 border-orange-500/20">
-            <div class="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                <div>
-                    <h3 class="text-2xl font-black italic logo-font italic">EVOLUTION ANALYTICS</h3>
-                    <p class="text-[10px] text-gray-500 font-bold uppercase tracking-widest">Acompanhe a evolução de carga por grupamento</p>
-                </div>
-                <div class="flex flex-wrap gap-2 justify-center" id="muscleGroups">
+            <main class="lg:col-span-8">
+                <div id="workoutList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     </div>
-            </div>
-            <div class="h-[300px] w-full relative">
-                <canvas id="evolutionChart"></canvas>
-            </div>
-        </section>
+            </main>
+
+            <section class="lg:col-span-12 glass p-8 rounded-[3rem] mt-4 border-orange-500/10">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-6">
+                    <div>
+                        <h3 class="text-2xl font-black italic logo-font uppercase tracking-tighter">Performance Evolution</h3>
+                        <p class="text-[10px] text-gray-500 font-bold uppercase tracking-[0.3em]">Análise volumétrica progressiva</p>
+                    </div>
+                    
+                    <div class="flex bg-black/40 p-1.5 rounded-2xl border border-white/5">
+                        <button onclick="setTimeFilter(7)" id="f7" class="filter-btn px-5 py-2 text-[10px] font-black uppercase rounded-xl active-filter">1 Sem</button>
+                        <button onclick="setTimeFilter(14)" id="f14" class="filter-btn px-5 py-2 text-[10px] font-black uppercase rounded-xl">2 Sem</button>
+                        <button onclick="setTimeFilter(21)" id="f21" class="filter-btn px-5 py-2 text-[10px] font-black uppercase rounded-xl">3 Sem</button>
+                        <button onclick="setTimeFilter(28)" id="f28" class="filter-btn px-5 py-2 text-[10px] font-black uppercase rounded-xl">4 Sem</button>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-3 mb-8" id="muscleGroups">
+                    </div>
+
+                <div class="h-[350px] w-full">
+                    <canvas id="evolutionChart"></canvas>
+                </div>
+            </section>
+        </div>
     </div>
 
     <div id="modal" class="hidden fixed inset-0 z-[110] flex items-center justify-center p-4">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="closeModal()"></div>
-        <div class="glass w-full max-w-3xl rounded-[2.5rem] p-6 md:p-10 relative z-10 overflow-hidden border-white/10">
-            <div class="flex justify-between items-start mb-8">
-                <h3 id="modalTitle" class="text-3xl font-black text-white italic logo-font uppercase tracking-tighter">TREINO</h3>
-                <button onclick="closeModal()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-white/5 text-gray-400 hover:text-white transition-all">&times;</button>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-3 mb-8">
-                <div class="md:col-span-6 relative">
-                    <input type="text" id="exerciseSearch" oninput="filterSuggestions()" placeholder="Qual o exercício hoje?" class="w-full input-dark p-4 rounded-2xl text-sm">
-                    <div id="suggestions" class="absolute left-0 right-0 top-full mt-2 glass rounded-2xl overflow-hidden z-20 hidden"></div>
+        <div class="absolute inset-0 bg-black/95 backdrop-blur-xl" onclick="closeModal()"></div>
+        <div class="glass w-full max-w-2xl rounded-[3rem] p-8 md:p-12 relative z-10 border-white/10 shadow-2xl">
+            <div class="flex justify-between items-center mb-10">
+                <div>
+                    <h3 id="modalTitle" class="text-3xl font-black text-white italic logo-font uppercase italic">--</h3>
+                    <p class="text-[10px] text-orange-500 font-bold uppercase tracking-widest">Protocolo de Carga</p>
                 </div>
-                <div class="md:col-span-2"><input type="number" id="exSeries" placeholder="Séries" class="w-full input-dark p-4 rounded-2xl text-sm text-center"></div>
-                <div class="md:col-span-2"><input type="number" id="exReps" placeholder="Reps" class="w-full input-dark p-4 rounded-2xl text-sm text-center"></div>
-                <div class="md:col-span-2"><button onclick="addExercise()" class="w-full h-full btn-gradient rounded-2xl font-black text-xl text-black">+</button></div>
+                <button onclick="closeModal()" class="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/5 text-2xl hover:bg-red-500/20 hover:text-red-500 transition-all">&times;</button>
             </div>
-
-            <div id="exerciseList" class="max-h-[40vh] overflow-y-auto space-y-3 pr-2 mb-8"></div>
+            
+            <div class="grid grid-cols-12 gap-3 mb-8">
+                <input type="text" id="exSearch" placeholder="Nome do exercício" class="col-span-12 md:col-span-6 bg-white/5 border border-white/10 p-4 rounded-2xl text-sm focus:border-orange-500 outline-none">
+                <input type="number" id="exS" placeholder="Sets" class="col-span-4 md:col-span-2 bg-white/5 border border-white/10 p-4 rounded-2xl text-sm text-center outline-none">
+                <input type="number" id="exR" placeholder="Reps" class="col-span-4 md:col-span-2 bg-white/5 border border-white/10 p-4 rounded-2xl text-sm text-center outline-none">
+                <button onclick="addExercise()" class="col-span-4 md:col-span-2 btn-primary rounded-2xl font-black text-black text-2xl shadow-lg">+</button>
+            </div>
+            
+            <div id="exerciseList" class="max-h-[45vh] overflow-y-auto custom-scrollbar space-y-3 pr-2">
+                </div>
         </div>
     </div>
 
     <script>
-        // Mapeamento de grupamentos musculares
-        const MUSCLE_MAP = {
-            "Peito": ["Supino", "Crucifixo", "Crossover", "Peck", "Voador", "Flexão", "Chest", "Dips"],
-            "Costas": ["Puxada", "Remada", "Pull", "Chin", "Levantamento", "Terra", "Muscle"],
-            "Perna": ["Agachamento", "Leg", "Hack", "Extensora", "Flexora", "Abdutora", "Adutora", "Stiff", "Afundo", "Avanço", "Búlgaro", "Pistol", "Gêmeos", "Panturrilha"],
-            "Ombro": ["Desenvolvimento", "Elevação", "Face", "Encolhimento", "Handstand"],
-            "Braço": ["Rosca", "Tríceps", "Martelo", "Scott", "Testa", "Punho"]
-        };
+        let workouts = JSON.parse(localStorage.getItem('it_pro_data')) || [];
+        let history = JSON.parse(localStorage.getItem('it_pro_history')) || [];
+        let activeId = null;
+        let chart = null;
+        let currentMuscle = "Peito";
+        let daysFilter = 7;
 
-        const exerciseBank = [
-            "Supino Reto (Barra)", "Supino Inclinado (Halter)", "Crucifixo Reto", "Peck Deck",
-            "Puxada Pulley Aberta", "Remada Curvada", "Remada Cavalinho", "Levantamento Terra",
-            "Agachamento Livre", "Leg Press 45°", "Cadeira Extensora", "Stiff",
-            "Desenvolvimento Halter", "Elevação Lateral", "Encolhimento",
-            "Rosca Direta (Barra W)", "Rosca Martelo", "Tríceps Pulley", "Tríceps Testa"
-        ];
+        const MUSCLES = ["Peito", "Costas", "Perna", "Ombro", "Braço", "Core"];
 
-        let workouts = JSON.parse(localStorage.getItem('ironTrackPro_v2')) || [];
-        let history = JSON.parse(localStorage.getItem('ironTrackHistory')) || [];
-        let activeWorkoutId = null;
-        let chartInstance = null;
-
-        function getMuscleGroup(exerciseName) {
-            for (let group in MUSCLE_MAP) {
-                if (MUSCLE_MAP[group].some(keyword => exerciseName.toLowerCase().includes(keyword.toLowerCase()))) {
-                    return group;
-                }
-            }
-            return "Outros";
+        // --- CORE LOGIC ---
+        function setTimeFilter(days) {
+            daysFilter = days;
+            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active-filter'));
+            document.getElementById(`f${days}`).classList.add('active-filter');
+            updateChart(currentMuscle);
         }
 
-        function addWorkout() {
-            const day = document.getElementById('daySelect').value;
-            const type = document.getElementById('typeSelect').value;
-            const title = document.getElementById('workoutInput').value;
-            if (!title) return;
-
-            workouts.push({ id: Date.now(), day, type, title, done: false, exercises: [] });
-            save();
-            document.getElementById('workoutInput').value = "";
-        }
-
-        function filterSuggestions() {
-            const val = document.getElementById('exerciseSearch').value.toLowerCase();
-            const res = document.getElementById('suggestions');
-            if(val.length < 2) { res.classList.add('hidden'); return; }
-            
-            const matches = exerciseBank.filter(ex => ex.toLowerCase().includes(val));
-            if(matches.length > 0) {
-                res.classList.remove('hidden');
-                res.innerHTML = matches.slice(0, 5).map(m => `<div onclick="selectSuggestion('${m}')" class="p-4 hover:bg-orange-500 hover:text-black cursor-pointer text-sm font-bold border-b border-white/5">${m}</div>`).join('');
-            } else { res.classList.add('hidden'); }
-        }
-
-        function selectSuggestion(val) {
-            document.getElementById('exerciseSearch').value = val;
-            document.getElementById('suggestions').classList.add('hidden');
-        }
-
-        function openModal(id) {
-            activeWorkoutId = id;
-            const workout = workouts.find(w => w.id === id);
-            document.getElementById('modalTitle').innerText = workout.title;
-            document.getElementById('modal').classList.remove('hidden');
-            renderExercises();
-        }
-
-        function closeModal() {
-            document.getElementById('modal').classList.add('hidden');
-            activeWorkoutId = null;
-        }
-
-        function addExercise() {
-            const name = document.getElementById('exerciseSearch').value;
-            const series = document.getElementById('exSeries').value || 0;
-            const reps = document.getElementById('exReps').value || 0;
-            if (!name) return;
-
-            workouts = workouts.map(w => {
-                if(w.id === activeWorkoutId) {
-                    w.exercises.push({ id: Date.now(), name, series, reps, completed: false, weight: 0 });
-                }
-                return w;
-            });
-            save();
-            renderExercises();
-        }
-
-        function toggleExercise(exId) {
-            const weight = prompt("Carga máxima utilizada (kg):", "0");
-            if (weight === null) return;
-
-            workouts = workouts.map(w => {
-                if(w.id === activeWorkoutId) {
-                    w.exercises = w.exercises.map(ex => {
-                        if(ex.id === exId) {
-                            const isFinishing = !ex.completed;
-                            if(isFinishing) {
-                                history.push({
-                                    date: new Date().toLocaleDateString('pt-BR'),
-                                    timestamp: Date.now(),
-                                    exercise: ex.name,
-                                    group: getMuscleGroup(ex.name),
-                                    weight: parseFloat(weight) || 0,
-                                    volume: (parseFloat(weight) || 0) * (ex.series * ex.reps)
-                                });
-                            }
-                            return {...ex, completed: !ex.completed, weight: parseFloat(weight)};
-                        }
-                        return ex;
-                    });
-                }
-                return w;
-            });
-            localStorage.setItem('ironTrackHistory', JSON.stringify(history));
-            save();
-            renderExercises();
-            initChart();
-        }
-
-        function toggleWorkoutStatus(id, e) {
-            e.stopPropagation();
-            workouts = workouts.map(w => w.id === id ? {...w, done: !w.done} : w);
-            save();
-        }
-
-        function deleteWorkout(id, e) {
-            e.stopPropagation();
-            if(confirm("Remover treino?")) { workouts = workouts.filter(w => w.id !== id); save(); }
-        }
-
-        function save() {
-            localStorage.setItem('ironTrackPro_v2', JSON.stringify(workouts));
-            render();
-            updateStats();
-        }
-
-        function updateStats() {
-            const total = workouts.length;
-            const done = workouts.filter(w => w.done).length;
-            document.getElementById('statsText').innerText = `${done}/${total}`;
-            
-            const totalVolume = history.slice(-20).reduce((acc, curr) => acc + curr.weight, 0);
-            document.getElementById('weeklyVolume').innerText = `${totalVolume.toLocaleString()} kg`;
-        }
-
-        function renderExercises() {
-            const container = document.getElementById('exerciseList');
-            const workout = workouts.find(w => w.id === activeWorkoutId);
-            container.innerHTML = workout.exercises.map(ex => `
-                <div onclick="toggleExercise(${ex.id})" class="flex items-center justify-between p-4 bg-white/5 rounded-2xl cursor-pointer hover:bg-white/10 border border-white/5">
-                    <div>
-                        <span class="text-sm font-bold ${ex.completed ? 'opacity-30 line-through' : ''}">${ex.name}</span>
-                        <p class="text-[10px] text-orange-500 font-black italic">
-                            ${ex.series}x${ex.reps} • ${ex.weight > 0 ? ex.weight + 'kg' : 'Sem carga'}
-                        </p>
-                    </div>
-                    <div class="w-8 h-8 rounded-xl border-2 border-orange-500 flex items-center justify-center ${ex.completed ? 'bg-orange-500 text-black' : 'text-orange-500'}">
-                        ${ex.completed ? '✓' : '+'}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        function render() {
-            const list = document.getElementById('workoutList');
-            list.innerHTML = workouts.slice().reverse().map(w => `
-                <div onclick="openModal(${w.id})" class="glass rounded-[2rem] p-6 flex flex-col justify-between cursor-pointer ${w.done ? 'opacity-40 grayscale' : ''} ${w.type === 'gym' ? 'workout-card-gym' : 'workout-card-cali'}">
-                    <div class="flex justify-between items-start mb-4">
-                        <div>
-                            <span class="text-[9px] font-black px-2 py-0.5 rounded bg-white/10 text-white uppercase">${w.day}</span>
-                            <h3 class="text-2xl font-black italic uppercase tracking-tighter mt-2 leading-none">${w.title}</h3>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="toggleWorkoutStatus(${w.id}, event)" class="h-10 w-10 rounded-xl flex items-center justify-center ${w.done ? 'bg-green-500 text-black' : 'bg-white/5 text-gray-500 border border-white/10'} font-bold">✓</button>
-                            <button onclick="deleteWorkout(${w.id}, event)" class="h-10 w-10 rounded-xl bg-white/5 text-gray-700 flex items-center justify-center hover:text-red-500">✕</button>
-                        </div>
-                    </div>
-                    <span class="text-[10px] font-bold text-gray-500 uppercase">${w.exercises.length} Exercícios</span>
-                </div>
-            `).join('');
-        }
-
-        // --- Gráfico de Evolução ---
-        function initChart(group = "Peito") {
+        function updateChart(group) {
+            currentMuscle = group;
             const ctx = document.getElementById('evolutionChart').getContext('2d');
-            const filteredData = history.filter(h => h.group === group).slice(-7);
-            
-            const labels = filteredData.map(d => d.date);
-            const weights = filteredData.map(d => d.weight);
+            const cutoff = Date.now() - (daysFilter * 24 * 60 * 60 * 1000);
+            const filteredData = history.filter(h => h.group === group && h.timestamp > cutoff)
+                                       .sort((a,b) => a.timestamp - b.timestamp);
 
-            if (chartInstance) chartInstance.destroy();
-
-            chartInstance = new Chart(ctx, {
+            if(chart) chart.destroy();
+            chart = new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels,
+                    labels: filteredData.map(d => d.date),
                     datasets: [{
-                        label: `Carga Máxima (kg) - ${group}`,
-                        data: weights,
+                        data: filteredData.map(d => d.weight),
                         borderColor: '#f97316',
-                        backgroundColor: 'rgba(249, 115, 22, 0.1)',
-                        borderWidth: 4,
+                        backgroundColor: 'rgba(249, 115, 22, 0.05)',
                         fill: true,
                         tension: 0.4,
+                        borderWidth: 4,
+                        pointRadius: 6,
                         pointBackgroundColor: '#f97316',
-                        pointRadius: 6
+                        pointBorderColor: '#000',
+                        pointBorderWidth: 2
                     }]
                 },
                 options: {
@@ -376,30 +199,184 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: {
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#666' } },
-                        x: { grid: { display: false }, ticks: { color: '#666' } }
+                        y: { 
+                            grid: { color: 'rgba(255,255,255,0.03)' },
+                            ticks: { color: '#444', font: { weight: '800' } }
+                        },
+                        x: { 
+                            grid: { display: false },
+                            ticks: { color: '#444', font: { weight: '800' } }
+                        }
                     }
                 }
             });
 
-            // Atualizar botões
-            document.querySelectorAll('.metric-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.innerText === group.toUpperCase());
-            });
+            renderMuscleButtons();
         }
 
-        // Gerar botões de filtro
-        const groups = ["Peito", "Costas", "Perna", "Ombro", "Braço"];
-        const groupContainer = document.getElementById('muscleGroups');
-        groupContainer.innerHTML = groups.map(g => `
-            <button onclick="initChart('${g}')" class="metric-btn px-4 py-2 rounded-xl glass text-[10px] font-black uppercase tracking-widest border border-white/5 hover:border-orange-500 transition-all">
-                ${g}
-            </button>
-        `).join('');
+        function renderMuscleButtons() {
+            const container = document.getElementById('muscleGroups');
+            container.innerHTML = MUSCLES.map(m => `
+                <button onclick="updateChart('${m}')" class="px-6 py-2.5 rounded-xl border border-white/5 text-[10px] font-black uppercase tracking-widest transition-all ${m === currentMuscle ? 'bg-white text-black' : 'bg-white/5 text-gray-500 hover:text-white'}">
+                    ${m}
+                </button>
+            `).join('');
+        }
 
-        render();
+        function addWorkout() {
+            const input = document.getElementById('workoutInput');
+            if(!input.value) return;
+            
+            workouts.push({
+                id: Date.now(),
+                title: input.value,
+                day: document.getElementById('daySelect').value,
+                type: document.getElementById('typeSelect').value,
+                done: false,
+                exercises: []
+            });
+            
+            input.value = "";
+            save();
+        }
+
+        function toggleWorkout(id, e) {
+            e.stopPropagation();
+            const w = workouts.find(x => x.id === id);
+            w.done = !w.done;
+            save();
+        }
+
+        function deleteWorkout(id, e) {
+            e.stopPropagation();
+            if(confirm("Deseja deletar esta sessão?")) {
+                workouts = workouts.filter(x => x.id !== id);
+                save();
+            }
+        }
+
+        function openModal(id) {
+            activeId = id;
+            const w = workouts.find(x => x.id === id);
+            document.getElementById('modalTitle').innerText = w.title;
+            renderExercises();
+            document.getElementById('modal').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal').classList.add('hidden');
+            activeId = null;
+        }
+
+        function addExercise() {
+            const name = document.getElementById('exSearch').value;
+            if(!name || !activeId) return;
+            
+            const w = workouts.find(x => x.id === activeId);
+            w.exercises.push({
+                id: Date.now(),
+                name: name,
+                sets: document.getElementById('exS').value || 0,
+                reps: document.getElementById('exR').value || 0,
+                weight: 0,
+                done: false
+            });
+            
+            document.getElementById('exSearch').value = "";
+            save();
+            renderExercises();
+        }
+
+        function logWeight(exId) {
+            const val = prompt("Qual a nova carga (kg)?");
+            if(val === null) return;
+
+            const w = workouts.find(x => x.id === activeId);
+            const ex = w.exercises.find(e => e.id === exId);
+            ex.weight = parseFloat(val) || 0;
+            ex.done = true;
+
+            // Auto-detect muscle group
+            let group = "Core";
+            const n = ex.name.toLowerCase();
+            if(/supino|peito|crucifixo|fly/i.test(n)) group = "Peito";
+            else if(/puxada|remada|costas|serrote/i.test(n)) group = "Costas";
+            else if(/agacha|leg|extensora|perna|stiff/i.test(n)) group = "Perna";
+            else if(/desenvolvimento|elevação|ombro/i.test(n)) group = "Ombro";
+            else if(/rosca|triceps|braço|bíceps/i.test(n)) group = "Braço";
+
+            history.push({
+                date: new Date().toLocaleDateString('pt-BR', {day:'2-digit', month:'2-digit'}),
+                timestamp: Date.now(),
+                group,
+                weight: ex.weight
+            });
+
+            save();
+            renderExercises();
+            updateChart(group);
+        }
+
+        function save() {
+            localStorage.setItem('it_pro_data', JSON.stringify(workouts));
+            localStorage.setItem('it_pro_history', JSON.stringify(history));
+            renderWorkouts();
+            updateStats();
+        }
+
+        function updateStats() {
+            const done = workouts.filter(w => w.done).length;
+            document.getElementById('statsHeader').innerText = `${done}/${workouts.length}`;
+            const totalVol = history.reduce((acc, h) => acc + h.weight, 0);
+            document.getElementById('totalVolHeader').innerText = `${totalVol.toLocaleString()} kg`;
+        }
+
+        function renderWorkouts() {
+            const list = document.getElementById('workoutList');
+            const sorted = [...workouts].sort((a,b) => a.done - b.done);
+            
+            list.innerHTML = sorted.map(w => `
+                <div onclick="openModal(${w.id})" class="glass rounded-[2rem] p-6 flex flex-col justify-between cursor-pointer group transition-all hover:border-orange-500/30 ${w.done ? 'workout-done' : ''} ${w.type === 'gym' ? 'border-l-4 border-l-orange-500' : 'border-l-4 border-l-blue-500'}">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <span class="text-[8px] font-black px-2 py-1 rounded bg-white/5 text-gray-400 uppercase tracking-widest">${w.day}</span>
+                            <h3 class="text-xl font-black italic uppercase tracking-tighter mt-2">${w.title}</h3>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="toggleWorkout(${w.id}, event)" class="w-10 h-10 rounded-xl flex items-center justify-center ${w.done ? 'bg-green-500 text-black' : 'bg-white/5 text-white/20 border border-white/5'} transition-colors">✓</button>
+                            <button onclick="deleteWorkout(${w.id}, event)" class="w-10 h-10 rounded-xl bg-white/5 text-white/20 flex items-center justify-center hover:text-red-500">✕</button>
+                        </div>
+                    </div>
+                    <div class="flex justify-between items-center">
+                        <p class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">${w.exercises.length} Exercícios</p>
+                        <p class="text-[10px] font-black text-orange-500 uppercase tracking-tighter group-hover:translate-x-1 transition-transform">${w.done ? 'Arquivado' : 'Acessar →'}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderExercises() {
+            const container = document.getElementById('exerciseList');
+            const w = workouts.find(x => x.id === activeId);
+            if(!w) return;
+
+            container.innerHTML = w.exercises.map(ex => `
+                <div class="flex items-center justify-between p-5 bg-white/5 rounded-3xl border border-white/5 hover:border-white/10 transition-all">
+                    <div>
+                        <p class="text-sm font-black ${ex.done ? 'text-gray-500 line-through' : 'text-white'}">${ex.name}</p>
+                        <p class="text-[10px] text-orange-500 font-bold uppercase mt-1">${ex.sets} Sets • ${ex.reps} Reps • ${ex.weight}kg</p>
+                    </div>
+                    <button onclick="logWeight(${ex.id})" class="px-6 py-2 rounded-xl border border-orange-500/30 text-[9px] font-black uppercase hover:bg-orange-500 hover:text-black transition-all">
+                        Log
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Init
+        renderWorkouts();
         updateStats();
-        initChart("Peito");
+        updateChart("Peito");
     </script>
 </body>
 </html>
